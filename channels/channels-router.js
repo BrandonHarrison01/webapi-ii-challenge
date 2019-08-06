@@ -37,7 +37,11 @@ router.post('/:id/comments', (req, res) => {
     } else {
         posts.insertComment(newComment)
             .then(comment => {
-                res.status(201).json(comment);
+                if (comment) {
+                    res.status(201).json(comment);
+                } else {
+                    res.status(404).json({ message: "The post with the specified ID does not exist." })
+                }
             })
             .catch(error => {
                 res.status(500).json({ error: "There was an error while saving the comment to the database" })
@@ -66,7 +70,12 @@ router.get('/:id', (req, res) => {
 
     posts.findById(postId)
         .then(post => {
-            res.status(200).json(post);
+            console.log('get post id', post)
+            if (post) {
+                res.status(200).json(post);
+            } else {
+                res.status(404).json({ message: "The post with the specified ID does not exist." })
+            }
         })
         .catch(error => {
             res.status(500).json({ error: "The posts information could not be retrieved." })
@@ -136,5 +145,6 @@ router.put('/:id', (req, res) => {
             res.status(500).json({ error: "The post information could not be modified." })
         })
 })
+
 
 module.exports = router
